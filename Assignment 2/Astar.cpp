@@ -43,31 +43,32 @@ int getH(vector<vector<int> > node, Node* target) {
 }
 
 vector<Node*> getNeighbours(Node* node, Node* target) {
-    vector<Node*> neighbours;
-    int dx[] = {0, 0, -1, 1};
-    int dy[] = {1, -1, 0, 0};
+    vector<Node*> neighbours ;
+    int dx[] = {0,0,1,-1};
+    int dy[] = {1,-1,0,0};
 
-    int blankX, blankY; 
+    int blankX , blankY ; 
 
-    for (int i = 0; i < node->board.size(); ++i) {
-        for(int j = 0; j < node->board[0].size(); ++j) {
-            if(node->board[i][j] == 0) {
-                blankX = i;
-                blankY = j;
+    for (int i = 0 ; i < node->board.size() ; i ++){
+        for(int j = 0 ; j < node->board[0].size() ; j ++){
+            if(node->board[i][j] == 0){
+                blankX = i ;
+                blankY = j ;
             }
         }
     }
 
-    for (int i = 0; i < 4; ++i) {
-        int newX = blankX + dx[i];
-        int newY = blankY + dy[i];
-        if (newX >= 0 && newX < node->board.size() && newY >= 0 && newY < node->board[0].size()) {
-            vector<vector<int> > newBoard = node->board; 
-            swap(newBoard[blankX][blankY] , newBoard[newX][newY]);
-            neighbours.push_back(new Node(newBoard, node->g + 1, getH(newBoard, target)));
+    for(int i = 0 ; i < 4 ; i ++){
+        int newX = blankX + dx[i] ; 
+        int newY = blankY + dy[i] ;
+
+        if(newX >= 0 && newX <node->board.size() && newY >= 0 && newY <node->board.size() ){
+            vector<vector<int> >newBoard = node->board ; 
+            swap(newBoard[newX][newY],newBoard[blankX][blankY]);
+            neighbours.push_back(new Node(newBoard,(node->g)+1,getH(newBoard,target)));
         }
     }
-    return neighbours;
+    return neighbours ;
 }
 
 bool isGoal(Node* node, Node* target) {
@@ -75,35 +76,30 @@ bool isGoal(Node* node, Node* target) {
 }
 
 void solve(Node* start, Node* target) {
-    Node* startNode = new Node(start->board , 0 , getH(start->board, target));
+    Node* startNode = new Node(start->board,0,getH(start->board,target));
 
-    priority_queue<pair<int, Node*>, vector<pair<int , Node*> >, greater<pair<int, Node*> > > pq;  
-    map<Node* ,bool> visited ;
+    priority_queue < pair<int,Node*> , vector<pair<int,Node*> >,greater<pair<int,Node*> > > pq ;
+    map<Node*,bool> visited ; 
 
-    pq.push(make_pair(startNode->f, startNode));
-
-    while (!pq.empty()) {
-        Node* currNode = pq.top().second ;
+    pq.push(make_pair(startNode->f,startNode));
+    visited[startNode] = true;
+    while(!pq.empty()){
+        Node *curr=pq.top().second;
         pq.pop();
-
-        print(currNode);
-
-        if (isGoal(currNode, target)) {
-            cout << "Goal state reached, total steps needed : " << currNode->g << endl << endl;
+        if(isGoal(curr,target)){
+            cout << "Goal state reached, total steps needed : " << curr->g << endl << endl;
             return;
         }
-
-        visited[currNode] = true;
-        vector<Node*> neighbours = getNeighbours(currNode, target);
-        for (auto n : neighbours) {
-            print(n);
-            cout << "f : " << n->f << " g : " << n->g << " h : " << n->h << endl << endl;
-            if (!visited[n]) {
-                pq.push(make_pair(n->f, n)) ;
+        visited[curr] = true ; 
+        vector<Node*> neighbours = getNeighbours(curr,target);
+        for(auto n : neighbours){
+            if(!visited[n]){
+                pq.push(make_pair(n->f,n));
             }
         }
+
     }
-    cout << "No solution exists" << endl;
+    cout << "No solution exists"<<endl ; 
 }
 
 int main() {
@@ -121,7 +117,7 @@ int main() {
     };
 
 
-    Node* start = new Node(startBoard, 0, 0);
+    Node* start = new Node(startBoard, 0, 0);xsss
     Node* target = new Node(targetBoard, 0, 0);
 
     solve(start, target);

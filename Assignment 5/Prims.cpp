@@ -1,41 +1,55 @@
 
-#include <bits/stdc++.h>>
+#include <iostream>
+#include <vector>
+#include <queue>
 
-int minimumSpanningTree(vector<vector<int>>& edges, int n)
+using namespace std ;
+
+int minimumSpanningTree(vector<vector<int> >& edges, int n)
 {
-  vector<vector<pair<int, int>>> adj(n);
-  for(auto edge : edges){
-    int u = edge[0];
-    int v = edge[1];
-    int w = edge[2];
 
-    adj[u].push_back({v,w});
-    adj[v].push_back({u,w});
+
+  vector<vector<pair<int,int> > > adj(n) ; 
+  for(auto e : edges){
+      int u = e[0] ;
+      int v = e[1] ;
+      int w = e[2] ;
+
+      adj[u].push_back(make_pair(v,w)) ;
+      adj[v].push_back(make_pair(u,w)) ;
   }
 
-  vector<bool> visited(n, false);
-  priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
-  int sum = 0;
-
-  pq.push({0,0});
-
+  vector<bool> visited(n,false);
+  priority_queue<pair<int,int> , vector<pair<int,int> > , greater<pair<int,int> > > pq ;
+  pq.push(make_pair(0,0));
+  visited[0] = true ;
+  int sum = 0 ;
   while(!pq.empty()){
-    pair<int, int> curr = pq.top();
-    pq.pop();
-
-    if(visited[curr.second]){
-      continue;
+    pair<int,int> c = pq.top() ; 
+    pq.pop() ; 
+    if(visited[c.second]){
+      continue ;
     }
 
-    visited[curr.second] = true;
-    sum += curr.first;
+    visited[c.second] ;
+    sum += c.first ;
 
-    for(auto node : adj[curr.second]){
-      if(!visited[node.first]){
-        pq.push({node.second, node.first});
+    for(auto e: adj[c.second]){
+      if(!visited[e.first]){
+        pq.push(make_pair(e.second,e.first));
       }
     }
-  }
+   }
+   return sum ;
 
-  return sum;
+}
+int main() {
+    // Example usage
+    vector<vector<int>> edges = {{0, 1, 4}, {0, 2, 3}, {1, 2, 1}, {1, 3, 2}, {2, 3, 5}};
+    int n = 4; // Number of nodes
+
+    int minSpanningTreeWeight = minimumSpanningTree(edges, n);
+    cout << "Weight of the minimum spanning tree: " << minSpanningTreeWeight << endl;
+
+    return 0;
 }
